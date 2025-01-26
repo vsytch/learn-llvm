@@ -107,7 +107,6 @@ RUN git clone https://github.com/microsoft/vcpkg.git /opt/vcpkg-${VCPKG_VERSION}
     ln -s /opt/vcpkg-${VCPKG_VERSION}/vcpkg /usr/bin/vcpkg && \
     vcpkg integrate zsh && \
     vcpkg install --clean-after-build \
-        boost \
         fmt \
         magic-enum \
         range-v3 && \
@@ -124,6 +123,21 @@ RUN git clone https://github.com/NVIDIA/stdexec.git /usr/src/stdexec && \
     cmake -S /usr/src/stdexec/ -B /tmp/stdexec/build/ && \
     cmake --build /tmp/stdexec/build/ --parallel && \
     cmake --install /tmp/stdexec/build/
+
+ADD https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.1/llvm-project-17.0.1.src.tar.xz /tmp/
+RUN tar -xvf llvm-project-17.0.1.src.tar.xz -C /usr/src/ --transform 's/llvm-project-17.0.1.src/llvm-17/'
+RUN cmake \
+        -G "Ninja" \
+        -S "/usr/src/llvm-17/llvm/" \
+        -B "/tmp/llvm-project/build/" \
+        -DCMAKE_INSTALL_PREFIX="/opt/llvm-17/" \
+        -DCMAKE_BUILD_TYPE="Release" \
+        -DLLVM_ENABLE_PROJECTS="clang" \
+        -DLLVM_TARGETS_TO_BUILD="X86" \
+        -DLLVM_ENABLE_ASSERTIONS="ON" && \
+    cmake --build /tmp/llvm-project/build/ --parallel && \
+    cmake --install /tmp/llvm-project/build/ && \
+    chown -R vscode: /opt/llvm-17/
 
 COPY ./scripts/dump_cpp_env.sh /usr/bin/
 

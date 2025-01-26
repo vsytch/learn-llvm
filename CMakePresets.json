@@ -49,6 +49,13 @@
       }
     },
     {
+      "name": "llvm",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "/opt/llvm-17/"
+      }
+    },
+    {
       "name": "dev",
       "inherits": [
         "project",
@@ -56,7 +63,8 @@
         "cppcheck",
         "clang-tidy",
         "std",
-        "unix"
+        "unix",
+        "llvm"
       ],
       "generator": "Ninja Multi-Config",
       "binaryDir": "${sourceDir}/build",
