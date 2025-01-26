@@ -1,0 +1,49 @@
+{
+  "name": "C++",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "UBUNTU_VERSION": "24.04",
+      "CMAKE_VERSION": "3.30.5",
+      "GCC_VERSION": "14",
+      "CLANG_VERSION": "18",
+      "MOLD_VERSION": "2.34.1",
+      "PYTHON_VERSION": "3.13.0",
+      "VCPKG_VERSION": "2024.10.21",
+      "STDEXEC_VERSION": "nvhpc-24.09",
+      "BAZEL_VERSION": "6.5.0"
+    }
+  },
+  "runArgs": [
+    "--cap-add=SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    // Needed for WSL performance.
+    "--dns=8.8.8.8"
+  ],
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.cpptools",
+        "BazelBuild.vscode-bazel",
+        "StackBuild.bazel-stack-vscode",
+        "StackBuild.bazel-stack-vscode-cc",
+        "ms-python.python"
+      ]
+    }
+  },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "dump_cpp_env.sh",
+  // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=${localEnv:HOME}/.cache,target=/home/vscode/.cache,type=bind,consistency=cached"
+  ]
+}
